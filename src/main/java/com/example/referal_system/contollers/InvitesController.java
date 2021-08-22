@@ -20,6 +20,6 @@ public class InvitesController {
 
     @PostMapping("/send")
     public Response send(@RequestBody InviteDto inviteDto) throws ParseException {
-        return null;
+        return inviteService.send(inviteDto);
     }
 }

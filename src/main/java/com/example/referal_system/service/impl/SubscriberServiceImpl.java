@@ -2,11 +2,11 @@ package com.example.referal_system.service.impl;
 
 import com.example.referal_system.dao.SubscribersRepository;
 import com.example.referal_system.mappers.SubscriberMapper;
+import com.example.referal_system.models.Response;
 import com.example.referal_system.models.Subscribers;
 import com.example.referal_system.models.dto.SubscriberDto;
 import com.example.referal_system.service.InviteService;
 import com.example.referal_system.service.SubscriberService;
-import com.example.referal_system.models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.ParseException;
@@ -57,21 +57,21 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public SubscriberDto saveIfNotExists(SubscriberDto subscriberDto) {
         Subscribers subscribers = SubscriberMapper.SUBSCRIBER_MAPPER.toEntity(subscriberDto);
-         if (subscribersRepository.existsById(subscribers.getId())) {
-             subscribers = subscribersRepository.findById(subscribers.getId()).get();
-         }else {
-             Date date = null;
-             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
-                 try {
-                     date = simpleDateFormat.parse(simpleDateFormat.format(new Date()));
-                 } catch (ParseException e) {
-                     e.printStackTrace();
-                 }
-                 subscribers.setActive(true);
-                 subscribers.setAdd_Date(date);
-                 subscribers.setEdit_Date(date);
-                 subscribers = subscribersRepository.save(subscribers);
-         }
+        if (subscribersRepository.existsById(subscribers.getId())) {
+            subscribers = subscribersRepository.findById(subscribers.getId()).get();
+        } else {
+            Date date = null;
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
+            try {
+                date = simpleDateFormat.parse(simpleDateFormat.format(new Date()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            subscribers.setActive(true);
+            subscribers.setAdd_Date(date);
+            subscribers.setEdit_Date(date);
+            subscribers = subscribersRepository.save(subscribers);
+        }
         return SubscriberMapper.SUBSCRIBER_MAPPER.toDto(subscribers);
     }
 
@@ -84,9 +84,9 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public Response acceptInvite(SubscriberDto subscriberDto) {
         SubscriberDto subscriberDto1 = saveIfNotExists(subscriberDto);
-         if(inviteService.acceptInviteAndChangeStatusOnAccept(subscriberDto1)) {
-             return Response.builder().status(203).message("Вы успешно приняли  Invite!").build();
-         }
+        if (inviteService.acceptInviteAndChangeStatusOnAccept(subscriberDto1)) {
+            return Response.builder().status(203).message("Вы успешно приняли  Invite!").build();
+        }
         return Response.builder().status(505).message("У вас пока нет активных приглашений!").build();
     }
 }
